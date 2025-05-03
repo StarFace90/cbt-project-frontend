@@ -1,3 +1,4 @@
+// src/pages/QuizPage.jsx
 import React from "react";
 import {
   ThemeProvider,
@@ -13,10 +14,11 @@ import {
 } from "@mui/material";
 import { getTheme } from "../theme";
 import { useQuiz } from "../context/QuizContext";
+import QuizHeader from "../components/QuizHeader"; // ✅ 홈 버튼 포함된 헤더
 import QuestionCard from "../components/QuestionCard";
 import Timer from "../components/Timer";
 import DarkModeToggle from "../components/DarkModeToggle";
-import NavPanel from "../components/NavPanel"; // ✅ 추가
+import NavPanel from "../components/NavPanel";
 
 function QuizPage() {
   const { questions, submitted, showResults, results, darkMode, submitAnswers, resetQuiz } = useQuiz();
@@ -26,8 +28,10 @@ function QuizPage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      {/* ✅ 홈 버튼 있는 퀴즈 헤더 */}
+      <QuizHeader />
+
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        {/* 헤더 */}
         <Grid container justifyContent="space-between" alignItems="center">
           <Typography variant="h4" gutterBottom>
             CBT 문제 응시
@@ -43,7 +47,7 @@ function QuizPage() {
         </Typography>
 
         <Grid container spacing={4} justifyContent="center">
-          {/* 문제 카드 영역 */}
+          {/* 메인 문제 영역 */}
           <Grid item xs={12} md={9}>
             <Box sx={{ mx: "auto", maxWidth: 800 }}>
               <Collapse in={!submitted}>
@@ -60,7 +64,7 @@ function QuizPage() {
                 </Box>
               </Collapse>
 
-              {/* 채점 결과 */}
+              {/* 결과 표시 */}
               <Fade in={showResults} timeout={500}>
                 <Box>
                   {results && (
@@ -99,7 +103,7 @@ function QuizPage() {
             </Box>
           </Grid>
 
-          {/* ✅ 문제 번호 네비게이션 */}
+          {/* 우측 문제 번호 네비게이션 */}
           <Grid item xs={12} md={3}>
             <NavPanel />
           </Grid>
