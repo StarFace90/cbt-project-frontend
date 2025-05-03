@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Typography, Container } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import UploadHeader from "../components/UploadHeader";
@@ -9,7 +9,7 @@ function UploadPage() {
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
-  // ❗ 로그인 안 된 사용자는 홈으로 리다이렉트
+  // 비로그인 시 홈으로 리다이렉트
   useEffect(() => {
     if (!isLoggedIn) {
       alert("로그인 후 이용 가능한 기능입니다.");
@@ -17,18 +17,25 @@ function UploadPage() {
     }
   }, [isLoggedIn, navigate]);
 
-  const handleSubmit = (formData) => {
-    const formDataToSend = new FormData();
-    formDataToSend.append("title", formData.title);
-    formDataToSend.append("pdf", formData.pdf);
+  // 업로드 핸들러
+  const handleSubmit = async ({ title, pdf }) => {
+    const payload = new FormData();
+    payload.append("title", title);
+    payload.append("pdf", pdf);
 
-    fetch("http://localhost:3000/questions", {
-      method: "POST",
-      body: formDataToSend,
-    })
-      .then((res) => res.json())
-      .then(() => alert("✅ 문제 등록 완료!"))
-      .catch(() => alert("❌ 등록 실패"));
+    try {
+      const res = await fetch("http://localhost:3000/questions/upload", {
+        method: "POST",
+        body: payload,
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      alert(`✅ ${data.message}`);
+      navigate("/quiz");
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert(`❌ 등록 실패: ${err.message}`);
+    }
   };
 
   return (

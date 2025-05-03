@@ -1,41 +1,38 @@
-// App.jsx
-// 메인 라우팅 컴포넌트: 각 페이지 라우트를 정의하며 Context들을 Wrapping
+// src/App.jsx
 
 import React from "react";
+// React Router 관련 컴포넌트 import
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// 로그인 상태를 관리하는 컨텍스트
+// 페이지 컴포넌트 import
+import StartPage from "./pages/StartPage";
+import QuizPage from "./pages/QuizPage";
+import UploadPage from "./pages/UploadPage";
+
+// Context Provider import
+import { QuizProvider } from "./context/QuizContext";
 import { AuthProvider } from "./context/AuthContext";
 
-// 문제 풀이 관련 상태를 공유하는 컨텍스트
-import { QuizProvider } from "./context/QuizContext";
-
-// 각 페이지 컴포넌트
-import StartPage from "./pages/StartPage"; // 시작 화면
-import QuizPage from "./pages/QuizPage"; // 문제 풀이 화면
-import UploadPage from "./pages/UploadPage"; // 문제 업로드 화면
-
-function CBTApp() {
+function App() {
   return (
-    <Router>
-      {/* 로그인 상태를 전역에서 사용 가능하게 설정 */}
-      <AuthProvider>
-        {/* 퀴즈 데이터, 정답 상태 등 공유 */}
-        <QuizProvider>
+    // AuthProvider: 로그인 상태 관리
+    <AuthProvider>
+      {/* QuizProvider: 퀴즈 상태 관리(Context) */}
+      <QuizProvider>
+        {/* Router: 라우팅 설정 */}
+        <Router>
           <Routes>
-            {/* 메인 진입점 - 문제 풀기 시작 버튼 */}
+            {/* 시작 페이지 ("/") */}
             <Route path="/" element={<StartPage />} />
-
-            {/* 실제 문제 풀이 페이지 */}
+            {/* 퀴즈 페이지 ("/quiz") */}
             <Route path="/quiz" element={<QuizPage />} />
-
-            {/* 관리자/로그인 사용자만 접근 가능한 문제 등록 페이지 */}
+            {/* 문제 업로드 페이지 ("/upload") */}
             <Route path="/upload" element={<UploadPage />} />
           </Routes>
-        </QuizProvider>
-      </AuthProvider>
-    </Router>
+        </Router>
+      </QuizProvider>
+    </AuthProvider>
   );
 }
 
-export default CBTApp;
+export default App;
